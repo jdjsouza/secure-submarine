@@ -10,9 +10,10 @@ router.get('/', rejectUnauthenticated, (req, res) => {
   console.log('req.user:', req.user);
   pool
     .query(
-      `SELECT "user".id, "user".clearance_level, "secret".secrecy_level, "secret".content 
-      FROM "user", "secret" 
-      WHERE "secret".secrecy_level < 13;`
+      `SELECT "secret".content, "secret".secrecy_level
+      FROM "secret"
+      WHERE "secret".secrecy_level < ${req.user.clearance_level};
+      `
     )
     .then((results) => res.send(results.rows))
     .catch((error) => {
